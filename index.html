@@ -217,6 +217,7 @@
 
       const API_BASE_DEFAULT = 'https://backend-production-878b.up.railway.app';
       const ACCESS_TOKEN_KEY = 'dashboardGerencialAccessToken';
+      const ADMIN_PASSWORD = 'Cosmob2026@';
 
       function resolveApiBase() {
         const params = new URLSearchParams(window.location.search);
@@ -246,13 +247,13 @@
       const rows = document.getElementById('rows');
 
       function getTokenQuery() {
-        const token = sessionStorage.getItem(ACCESS_TOKEN_KEY) || '';
+        const token = sessionStorage.getItem(ACCESS_TOKEN_KEY) || ADMIN_PASSWORD;
         return token ? `token=${encodeURIComponent(token)}` : '';
       }
 
       function buildReportUrl(id, download, temHtml) {
         const q = new URLSearchParams();
-        const token = sessionStorage.getItem(ACCESS_TOKEN_KEY) || '';
+        const token = sessionStorage.getItem(ACCESS_TOKEN_KEY) || ADMIN_PASSWORD;
         if (token) q.set('token', token);
         if (download) q.set('download', '1');
         const qs = q.toString();
@@ -268,6 +269,9 @@
       }
 
       async function validateAndUnlock(token) {
+        if (token !== ADMIN_PASSWORD) {
+          throw new Error('Senha inválida.');
+        }
         sessionStorage.setItem(ACCESS_TOKEN_KEY, token);
         setLocked(false);
       }
