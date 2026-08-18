@@ -302,8 +302,8 @@
 
           lista.forEach((item) => {
             const temHtml = Boolean(item.temHtml);
-            const viewLabel = temHtml ? 'Visualizar HTML' : 'Visualizar PDF';
-            const downloadLabel = temHtml ? 'Baixar HTML' : 'Baixar PDF';
+            const viewLabel = temHtml ? 'Visualizar relatório' : 'Visualizar PDF';
+            const downloadLabel = temHtml ? 'Baixar relatório (HTML)' : 'Baixar PDF';
             const tr = document.createElement('tr');
             tr.innerHTML = `
               <td>
