@@ -185,6 +185,7 @@
           <tr>
             <th>Responsável / Empresa</th>
             <th>Cidade</th>
+            <th>Estado</th>
             <th>Produto</th>
             <th>Data e Hora</th>
             <th>IGC / PCM</th>
@@ -233,6 +234,20 @@
       }
 
       const API_BASE = resolveApiBase();
+      const ESTADOS = {
+        AC: 'Acre', AL: 'Alagoas', AP: 'Amapá', AM: 'Amazonas',
+        BA: 'Bahia', CE: 'Ceará', DF: 'Distrito Federal', ES: 'Espírito Santo',
+        GO: 'Goiás', MA: 'Maranhão', MT: 'Mato Grosso', MS: 'Mato Grosso do Sul',
+        MG: 'Minas Gerais', PA: 'Pará', PB: 'Paraíba', PR: 'Paraná',
+        PE: 'Pernambuco', PI: 'Piauí', RJ: 'Rio de Janeiro', RN: 'Rio Grande do Norte',
+        RS: 'Rio Grande do Sul', RO: 'Rondônia', RR: 'Roraima', SC: 'Santa Catarina',
+        SP: 'São Paulo', SE: 'Sergipe', TO: 'Tocantins'
+      };
+
+      function formatarEstado(uf) {
+        const sigla = String(uf || '').trim().toUpperCase();
+        return Object.prototype.hasOwnProperty.call(ESTADOS, sigla) ? ESTADOS[sigla] : '-';
+      }
 
       const gate = document.getElementById('gate');
       const gateForm = document.getElementById('gateForm');
@@ -310,7 +325,8 @@
                 <div>${item.nomeResponsavel || '-'}</div>
                 <div class="small">${item.nomeEmpresa || '-'}</div>
               </td>
-              <td>${item.cidade || '-'}${item.uf ? `/${item.uf}` : ''}</td>
+              <td>${item.cidade || '-'}</td>
+              <td>${formatarEstado(item.uf)}</td>
               <td>${item.produto || '-'}</td>
               <td>${item.dataHora || '-'}</td>
               <td>${Number(item.igc || 0).toFixed(1)}% / ${Number(item.pcm || 0).toFixed(1)}%</td>
