@@ -197,6 +197,7 @@
     </div>
   </div>
 
+  <script src="./municipios-uf.js"></script>
   <script>
     (function () {
       const FETCH_TIMEOUT_MS = 15000;
@@ -244,9 +245,26 @@
         SP: 'São Paulo', SE: 'Sergipe', TO: 'Tocantins'
       };
 
-      function formatarEstado(uf) {
+      function formatarEstado(uf, cidade) {
         const sigla = String(uf || '').trim().toUpperCase();
-        return Object.prototype.hasOwnProperty.call(ESTADOS, sigla) ? ESTADOS[sigla] : '-';
+        if (Object.prototype.hasOwnProperty.call(ESTADOS, sigla)) return ESTADOS[sigla];
+
+        const nomeCidade = String(cidade || '').normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '').toUpperCase()
+          .replace(/[^A-Z0-9]+/g, ' ').trim();
+        const municipios = window.MUNICIPIOS_UF || {};
+        const ufs = municipios[nomeCidade];
+        if (Array.isArray(ufs) && ufs.length === 1) return ESTADOS[ufs[0]] || '-';
+
+        // Aceita cidades cadastradas com UF no final, como "PIEN-PR".
+        const cidadeComUf = nomeCidade.match(/^(.+) ([A-Z]{2})$/);
+        if (cidadeComUf) {
+          const candidatas = municipios[cidadeComUf[1]];
+          if (Array.isArray(candidatas) && candidatas.includes(cidadeComUf[2])) {
+            return ESTADOS[cidadeComUf[2]] || '-';
+          }
+        }
+        return '-';
       }
 
       const gate = document.getElementById('gate');
@@ -326,7 +344,7 @@
                 <div class="small">${item.nomeEmpresa || '-'}</div>
               </td>
               <td>${item.cidade || '-'}</td>
-              <td>${formatarEstado(item.uf)}</td>
+              <td>${formatarEstado(item.uf, item.cidade)}</td>
               <td>${item.produto || '-'}</td>
               <td>${item.dataHora || '-'}</td>
               <td>${Number(item.igc || 0).toFixed(1)}% / ${Number(item.pcm || 0).toFixed(1)}%</td>
